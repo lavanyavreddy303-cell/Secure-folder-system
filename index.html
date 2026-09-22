@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <title>Cryptix | Secure Folder System</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="bg-grid"></div>
+    <div class="bg-circuit"></div>
+    <div class="bg-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+        <div class="orb orb-4"></div>
+    </div>
+
+    <!-- App Shell Header -->
+    <header class="app-header">
+        <div class="container header-container">
+            <a href="/" class="logo-area">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="url(#grad)" stroke-width="2">
+                        <defs>
+                            <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#06B6D4" />
+                                <stop offset="100%" stop-color="#3B82F6" />
+                            </linearGradient>
+                        </defs>
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        <circle cx="12" cy="10" r="3" stroke="url(#grad)"></circle>
+                        <path d="M12 13v3" stroke="url(#grad)" stroke-width="3"></path>
+                    </svg>
+                </div>
+                <div class="logo-text">
+                    <span class="logo-title gradient-text">CRYPTIX</span>
+                    <span class="logo-subtitle">Secure Folder System</span>
+                </div>
+            </a>
+
+            <!-- Stepper -->
+            <div class="stepper">
+                <div class="step active" id="step-1">
+                    <div class="step-node">1</div>
+                    <div class="step-label">User</div>
+                </div>
+                <div class="step-connector"></div>
+                
+                <div class="step" id="step-2">
+                    <div class="step-node">2</div>
+                    <div class="step-label">Select</div>
+                </div>
+                <div class="step-connector"></div>
+                
+                <div class="step" id="step-3">
+                    <div class="step-node">3</div>
+                    <div class="step-label">Encrypt / Decrypt</div>
+                </div>
+                <div class="step-connector"></div>
+                
+                <div class="step" id="step-4">
+                    <div class="step-node">4</div>
+                    <div class="step-label">Result</div>
+                </div>
+            </div>
+
+            <div class="header-right" style="display: flex; align-items: center; gap: var(--space-3);">
+
+                <div id="lock-status" class="status-pill locked">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> Locked
+                </div>
+                <div id="lock-countdown" class="countdown"></div>
+                
+                <div style="position: relative; display: inline-block;">
+                    <button id="btn-account-menu" class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.875rem; display: none;">Account ▾</button>
+                    <div id="account-dropdown" style="display: none; position: absolute; right: 0; top: 100%; margin-top: 4px; background: rgba(9, 17, 29, 0.95); border: 1px solid var(--glass-border); border-radius: 8px; padding: 4px; z-index: 100; min-width: 220px; box-shadow: 0 4px 15px rgba(0,0,0,0.6); backdrop-filter: blur(10px);">
+                        <button id="btn-show-crypto-info" class="btn" style="width: 100%; text-align: left; padding: 8px 12px; background: transparent; border: none; color: var(--text); font-size: 0.875rem; cursor: pointer;">How Cryptix protects files</button>
+                        <button id="btn-change-passphrase" class="btn" style="width: 100%; text-align: left; padding: 8px 12px; background: transparent; border: none; color: var(--text); font-size: 0.875rem; cursor: pointer;">Change passphrase</button>
+                        <div style="height: 1px; background: var(--glass-border); margin: 4px 0;"></div>
+                        <button id="btn-logout" class="btn" style="width: 100%; text-align: left; padding: 8px 12px; background: transparent; border: none; color: var(--text); font-size: 0.875rem; cursor: pointer;">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-layout container">
+        <!-- Main Panel -->
+        <div class="main-panel">
+            <!-- STAGE 1: Login -->
+            <section id="stage-1" class="stage">
+                <div class="hero">
+                    <h1 class="gradient-hero-text hero-headline">Lock it down.<br>Prove it's untouched.</h1>
+                    <p class="hero-subtitle">Military-grade AES-256 encryption, RSA-3072 keys, and SHA-256 integrity.</p>
+                    
+                    <div class="hero-chips">
+                        <div class="chip">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> RSA-3072 Keys
+                        </div>
+                        <div class="chip">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> AES-256-GCM
+                        </div>
+                        <div class="chip">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> SHA-256 Verified
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Create Keys Card -->
+                <div id="init-card" class="glass-card login-card" style="display: none;">
+                    <h2>First-time setup: create your passphrase</h2>
+                    <p class="text-muted login-card-subtitle" style="margin-bottom: var(--space-4);">Set a strong passphrase to encrypt your master RSA private key. (Min 10 chars)</p>
+                    
+                    <div class="input-group">
+                        <input type="password" id="init-password" placeholder=" ">
+                        <label for="init-password">Passphrase</label>
+                        <button class="input-icon-toggle" type="button">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </button>
+                    </div>
+                    
+                    <div class="strength-meter" id="strength-meter">
+                        <div class="strength-seg"></div>
+                        <div class="strength-seg"></div>
+                        <div class="strength-seg"></div>
+                        <div class="strength-seg"></div>
+                        <div class="strength-seg"></div>
+                    </div>
+
+                    <div class="input-group">
+                        <input type="password" id="init-confirm" placeholder=" ">
+                        <label for="init-confirm">Confirm Passphrase</label>
+                        <button class="input-icon-toggle" type="button">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </button>
+                    </div>
+
+                    <button id="btn-init" class="btn btn-primary" style="width: 100%;">Create keys</button>
+                </div>
+
+                <!-- Unlock Card -->
+                <div id="unlock-card" class="glass-card login-card" style="display: none;">
+                    <h2>Welcome back</h2>
+                    <div id="unlock-passphrase-badge" style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; color: var(--safe); font-size: 0.875rem; font-weight: 500;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                        Passphrase is set
+                    </div>
+                    <p id="unlock-created-at" class="text-muted login-card-subtitle" style="margin-bottom: var(--space-4);">Created on -. Enter it to unlock your vault.</p>
+                    
+                    <div class="input-group">
+                        <input type="password" id="unlock-password" placeholder=" ">
+                        <label for="unlock-password">Passphrase</label>
+                        <button class="input-icon-toggle" type="button">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </button>
+                    </div>
+                    
+                    <p id="unlock-error" class="text-danger text-center" style="font-size: 0.875rem; margin-top: -12px; margin-bottom: var(--space-4);"></p>
+
+                    <button id="btn-unlock" class="btn btn-primary" style="width: 100%;">Unlock</button>
+                    <div style="text-align: center; margin-top: var(--space-3);">
+                        <a id="link-forgot-passphrase" href="#" class="text-muted" style="font-size: 0.875rem; text-decoration: underline; text-underline-offset: 2px;">Forgot passphrase?</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STAGE 2: Select -->
+            <section id="stage-2" class="stage" style="display: none;">
+                <div class="split-cards">
+                    <!-- Encrypt Card -->
+                    <div class="glass-card hover-lift encrypt-card" style="display: flex; flex-direction: column;">
+                        <div class="card-icon" style="width: 48px; height: 48px; border-radius: 12px; background: linear-gradient(135deg, var(--cyan), var(--blue)); display: flex; align-items: center; justify-content: center; margin: 0 auto var(--space-3); color: #04070D; box-shadow: 0 4px 15px rgba(34, 211, 238, 0.35);">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                        </div>
+                        <h2 class="text-center">Encrypt</h2>
+                        <p class="text-muted text-center">Secure a folder or file into your vault.</p>
+                        
+                        <div class="btn-group" style="display: flex; gap: var(--space-3); margin-top: var(--space-3);">
+                            <button id="btn-choose-folder" class="btn btn-secondary" style="flex: 1;">Choose folder</button>
+                            <button id="btn-choose-file" class="btn btn-secondary" style="flex: 1;">Choose file</button>
+                        </div>
+
+                        <!-- Native dialog hint (hidden until picker is open) -->
+                        <p id="native-dialog-hint" class="text-muted" style="display: none; font-size: 0.8rem; margin-top: var(--space-2); text-align: center;">
+                            A file dialog opened. It may be behind this window.
+                        </p>
+
+                        <!-- Fallback in-app browser link -->
+                        <p style="margin-top: var(--space-2); text-align: center; font-size: 0.8rem;">
+                            <a id="link-browse-folder" href="#" class="text-muted" style="cursor: pointer; text-decoration: underline; text-underline-offset: 2px;">Browse inside the app (folder)</a>
+                            &nbsp;·&nbsp;
+                            <a id="link-browse-file" href="#" class="text-muted" style="cursor: pointer; text-decoration: underline; text-underline-offset: 2px;">file</a>
+                        </p>
+
+                        <!-- Preview details (hidden initially) -->
+                        <div id="encrypt-preview" class="preview-box" style="display: none; margin-top: var(--space-3); background: rgba(4, 7, 13, 0.4); padding: var(--space-3); border-radius: var(--radius-card); border: 1px solid var(--glass-border);">
+                            <div id="encrypt-path-display" class="path-display monospace text-muted" style="font-size: 0.8rem; word-break: break-all; margin-bottom: var(--space-2);"></div>
+                            <div class="preview-stats" style="display: flex; gap: var(--space-2); flex-wrap: wrap;">
+                                <span class="badge badge-info"><span id="preview-count" style="margin-right: 4px;">0</span> <span id="preview-items-label">items</span></span>
+                                <span class="badge badge-info"><span id="preview-size">0 B</span></span>
+                                <span class="badge badge-warn" id="preview-skipped" style="display: none;">0 skipped symlinks</span>
+                            </div>
+                        </div>
+
+                        <button id="btn-stage2-encrypt" class="btn btn-primary" style="width: 100%; margin-top: var(--space-4);" disabled>Continue</button>
+                    </div>
+
+                    <!-- Decrypt Card -->
+                    <div class="glass-card hover-lift decrypt-card" style="display: flex; flex-direction: column;">
+                        <div class="card-icon" style="width: 48px; height: 48px; border-radius: 12px; background: linear-gradient(135deg, var(--teal), var(--mint)); display: flex; align-items: center; justify-content: center; margin: 0 auto var(--space-3); color: #04070D; box-shadow: 0 4px 15px rgba(20, 184, 166, 0.35);">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path><path d="M12 14v3"></path></svg>
+                        </div>
+                        <h2 class="text-center">Decrypt from Secure Storage</h2>
+                        <p class="text-muted text-center">Extract and verify files from your vault.</p>
+                        
+                        <div class="search-box" style="margin-top: var(--space-4);">
+                            <div class="input-group" style="margin-bottom: var(--space-3);">
+                                <input type="text" id="storage-search" placeholder=" ">
+                                <label for="storage-search">Search files</label>
+                            </div>
+                        </div>
+
+                        <div class="storage-list-container" style="flex: 1; max-height: 200px; overflow-y: auto; border: 1px solid var(--glass-border); border-radius: var(--radius-card); padding: var(--space-2); background: rgba(4, 7, 13, 0.4);">
+                            <!-- List headers -->
+                            <div class="storage-row header" style="display: flex; align-items: center; padding: var(--space-2); border-bottom: 1px solid var(--glass-border); color: var(--muted); font-size: 0.8rem; font-weight: 600;">
+                                <input type="checkbox" id="storage-select-all" style="margin-right: var(--space-3);" disabled>
+                                <span class="col-name" style="flex: 2;">Name</span>
+                                <span class="col-size" style="flex: 1;">Size</span>
+                            </div>
+                            <div id="storage-list" style="font-size: 0.9rem;">
+                                <!-- Populated by JS -->
+                                <div class="text-muted" style="text-align: center; padding: var(--space-4);">Loading...</div>
+                            </div>
+                        </div>
+
+                        <button id="btn-stage2-decrypt" class="btn btn-primary" style="width: 100%; margin-top: var(--space-4);" disabled>Continue</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STAGE 3: Encrypt / Decrypt Processing -->
+            <section id="stage-3" class="stage" style="display: none;">
+                <div class="glass-card" style="max-width: 720px; margin-inline: auto;">
+                    <h2 id="stage3-title" class="text-center">Ready to Process</h2>
+                    <p class="text-muted text-center" id="stage3-desc">Summary of what will happen...</p>
+
+                    <!-- Encrypt Options -->
+                    <div id="stage3-encrypt-opts" style="display: none; margin-top: var(--space-4); margin-bottom: var(--space-4); padding: var(--space-3); border-radius: var(--radius-card); background: rgba(4, 7, 13, 0.4); border: 1px solid var(--glass-border);">
+                        <label style="display: flex; align-items: center; gap: var(--space-3); cursor: pointer; margin-bottom: 12px;">
+                            <input type="checkbox" id="lock-in-place">
+                            <span>Lock original in place (rename to .encrypt & read-only)</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: var(--space-3); cursor: pointer;">
+                            <input type="checkbox" id="delete-originals" checked>
+                            <span>Remove original after verified encryption</span>
+                        </label>
+                        <p class="text-muted" style="font-size: 0.8rem; margin-top: 6px; margin-left: 28px;">
+                            The original will be removed only after the encrypted copy is verified.
+                        </p>
+                    </div>
+
+                    <!-- Decrypt Options -->
+                    <div id="stage3-decrypt-opts" style="display: none; margin-top: var(--space-4); margin-bottom: var(--space-4);">
+                        <p class="text-muted" style="margin-bottom: var(--space-2);">Destination Folder:</p>
+                        <div style="display: flex; gap: var(--space-3); align-items: center;">
+                            <code id="dest-path" class="monospace path-display text-muted" style="flex: 1; padding: var(--space-3); background: rgba(4, 7, 13, 0.5); border-radius: var(--radius-card); border: 1px solid var(--glass-border); word-break: break-all;">Not selected</code>
+                            <button id="btn-browse-dest" class="btn btn-secondary">Browse</button>
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div id="job-progress-container" style="display: none; margin-top: var(--space-5); margin-bottom: var(--space-4);">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-2);">
+                            <span id="job-status-text" class="text-muted" aria-live="polite">Initializing...</span>
+                            <span id="job-percent">0%</span>
+                        </div>
+                        <div class="progress-track" style="height: 12px; background: rgba(4, 7, 13, 0.6); border-radius: 6px; overflow: hidden; position: relative; border: 1px solid var(--glass-border);">
+                            <div id="job-progress-bar" class="progress-fill" style="width: 0%; height: 100%; background: var(--grad-main); position: absolute; left: 0; top: 0; transition: width 0.3s ease;">
+                                <div class="shimmer" style="width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); animation: shimmer 1.5s infinite;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: var(--space-3); margin-top: var(--space-5);">
+                        <button id="btn-cancel-job" class="btn btn-secondary">Cancel</button>
+                        <button id="btn-start-job" class="btn btn-primary" style="flex: 1; font-size: 1.1rem; padding: 16px;">Start</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STAGE 4: Result -->
+            <section id="stage-4" class="stage" style="display: none;">
+                <!-- Encrypt Results -->
+                <div id="result-encrypt" class="glass-card result-card" style="display: none; text-align: center;">
+                    <div class="success-icon" style="margin: 0 auto var(--space-4); width: 80px; height: 80px; background: rgba(52, 211, 153, 0.12); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--safe);">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
+                    </div>
+                    <h2 class="gradient-text">Encryption Complete</h2>
+                    
+                    <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: var(--space-3); margin: var(--space-4) 0;">
+                        <div class="stat-box" style="background: var(--surface); border: 1px solid var(--glass-border); padding: var(--space-3); border-radius: var(--radius-card);">
+                            <div class="stat-val text-safe" id="res-enc-count" style="font-size: 1.75rem; font-weight: 700;">0</div>
+                            <div class="text-muted" style="font-size: 0.8rem;">Encrypted</div>
+                        </div>
+                        <div class="stat-box" style="background: var(--surface); border: 1px solid var(--glass-border); padding: var(--space-3); border-radius: var(--radius-card);">
+                            <div class="stat-val text-safe" id="res-enc-removed" style="font-size: 1.75rem; font-weight: 700;">0</div>
+                            <div class="text-muted" style="font-size: 0.8rem;">Originals Removed</div>
+                        </div>
+                        <div class="stat-box" style="background: var(--surface); border: 1px solid var(--glass-border); padding: var(--space-3); border-radius: var(--radius-card);">
+                            <div class="stat-val text-warn" id="res-enc-kept" style="font-size: 1.75rem; font-weight: 700;">0</div>
+                            <div class="text-muted" style="font-size: 0.8rem;">Originals Kept</div>
+                        </div>
+                        <div class="stat-box" style="background: var(--surface); border: 1px solid var(--glass-border); padding: var(--space-3); border-radius: var(--radius-card);">
+                            <div class="stat-val text-warn" id="res-enc-skip" style="font-size: 1.75rem; font-weight: 700;">0</div>
+                            <div class="text-muted" style="font-size: 0.8rem;">Skipped</div>
+                        </div>
+                        <div class="stat-box" style="background: var(--surface); border: 1px solid var(--glass-border); padding: var(--space-3); border-radius: var(--radius-card);">
+                            <div class="stat-val text-danger" id="res-enc-err" style="font-size: 1.75rem; font-weight: 700;">0</div>
+                            <div class="text-muted" style="font-size: 0.8rem;">Errors</div>
+                        </div>
+                    </div>
+                    
+                    <div id="res-enc-keptlist" class="kept-list text-left" style="display: none; background: rgba(245, 158, 11, 0.1); padding: var(--space-3); border-radius: 8px; border-left: 4px solid var(--warn); margin-bottom: var(--space-4); max-height: 150px; overflow-y: auto;">
+                    </div>
+
+                    <div id="res-enc-errlist" class="error-list text-left" style="display: none; background: rgba(239, 68, 68, 0.1); padding: var(--space-3); border-radius: 8px; border-left: 4px solid var(--danger); margin-bottom: var(--space-4); max-height: 150px; overflow-y: auto;">
+                    </div>
+
+                    <!-- Before -> After Proof Cards Container -->
+                    <div id="res-enc-proof-cards" style="margin-top: var(--space-4); text-align: left;"></div>
+                </div>
+
+                <!-- Decrypt Results -->
+                <div id="result-decrypt" class="result-card" style="display: none;">
+                    
+                    <!-- Tampered Banner -->
+                    <div id="tampered-banner" class="glass-card shake" style="display: none; background: rgba(239, 68, 68, 0.12); border-color: rgba(239, 68, 68, 0.4); box-shadow: 0 0 30px rgba(239, 68, 68, 0.25); margin-bottom: var(--space-4);">
+                        <div style="display: flex; align-items: center; gap: var(--space-4);">
+                            <div class="pulsing-icon" style="color: var(--danger); animation: pulse-danger 2s infinite;">
+                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                            </div>
+                            <div>
+                                <h3 class="text-danger" style="margin-bottom: 4px;">Tampering Detected!</h3>
+                                <p class="text-muted">One or more files have been modified or corrupted. Unsafe files were NOT released.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card">
+                        <h2 class="text-center">Decryption Results</h2>
+                        <div class="results-table-container" style="max-height: 400px; overflow-y: auto; margin-top: var(--space-4); border: 1px solid var(--glass-border); border-radius: var(--radius-card); background: rgba(4, 7, 13, 0.4);">
+                            <table class="results-table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.875rem;">
+                                <thead>
+                                    <tr style="border-bottom: 1px solid var(--glass-border); background: rgba(255,255,255,0.04);">
+                                        <th style="padding: var(--space-3); color: var(--muted);">File</th>
+                                        <th style="padding: var(--space-3); color: var(--muted);">Status</th>
+                                        <th style="padding: var(--space-3); color: var(--muted);">Hash</th>
+                                        <th style="padding: var(--space-3); color: var(--muted);">Details</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="res-dec-tbody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-bar" style="display: flex; gap: var(--space-3); margin-top: var(--space-5); flex-wrap: wrap; justify-content: center; align-items: center;">
+                    <button id="btn-back-to-select" class="btn btn-secondary">Back to Select</button>
+                    <button id="btn-open-dest" class="btn btn-secondary" style="display: none;">Open Destination</button>
+                    <div style="display: inline-flex; align-items: center; gap: 6px;">
+                        <button id="btn-export-pubkey" class="btn btn-secondary">Export Public Key</button>
+                        <span id="tooltip-pubkey" title="Your public key is safe to share. Others use it so you can receive files. It cannot decrypt anything. Your private key never leaves this computer." style="cursor: help; color: var(--cyan); display: flex; align-items: center;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                        </span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- HASHLAB SECTION -->
+            <section id="panel-hashlab" class="stage" style="display: none;">
+                <div class="glass-card" style="max-width: 840px; margin-inline: auto;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4);">
+                        <h2>🧪 SHA-256 Hash Lab</h2>
+                        <button id="btn-close-hashlab" class="btn btn-secondary">Back to Vault</button>
+                    </div>
+                    <p class="text-muted" style="margin-bottom: var(--space-4);">
+                        Convert text and files into fixed-length cryptographic fingerprints. SHA-256 is used strictly for integrity verification, not encryption.
+                    </p>
+
+                    <!-- Part 1: Text to hash -->
+                    <div style="background: rgba(4, 7, 13, 0.5); padding: var(--space-4); border-radius: var(--radius-card); border: 1px solid var(--glass-border); margin-bottom: var(--space-4);">
+                        <h3 style="margin-bottom: var(--space-2); color: var(--cyan);">1. Text to Hash</h3>
+                        <div class="input-group" style="margin-bottom: var(--space-3);">
+                            <textarea id="hl-text-input" rows="2" style="width: 100%; padding: var(--space-3); background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border); border-radius: 8px; color: var(--text); resize: vertical; font-family: inherit;">My salary is ₹50,000</textarea>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-2); flex-wrap: wrap;">
+                            <span class="text-muted" style="font-size: 0.85rem;">SHA-256 Hash:</span>
+                            <code id="hl-text-hash" class="monospace" style="font-size: 0.85rem; color: var(--mint); background: rgba(0,0,0,0.5); padding: 4px 8px; border-radius: 4px; word-break: break-all;"></code>
+                            <button id="btn-hl-copy-hash" class="btn btn-secondary" style="padding: 2px 8px; font-size: 0.75rem;">Copy</button>
+                        </div>
+                        <p class="text-muted" style="font-size: 0.8rem; margin: 0;">
+                            Same input always gives the same hash. It cannot be reversed. It is a fingerprint, not encryption.
+                        </p>
+                    </div>
+
+                    <!-- Part 2: Change one character (Avalanche) -->
+                    <div style="background: rgba(4, 7, 13, 0.5); padding: var(--space-4); border-radius: var(--radius-card); border: 1px solid var(--glass-border); margin-bottom: var(--space-4);">
+                        <h3 style="margin-bottom: var(--space-2); color: var(--cyan);">2. Change One Character</h3>
+                        <p class="text-muted" style="font-size: 0.85rem; margin-bottom: var(--space-3);">
+                            See the avalanche effect: a 1-character modification causes ~50% of the entire 256-bit hash to flip!
+                        </p>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-bottom: var(--space-3);">
+                            <div>
+                                <label style="font-size: 0.85rem; color: var(--muted); display: block; margin-bottom: 4px;">Original:</label>
+                                <textarea id="hl-compare-a" rows="2" style="width: 100%; padding: var(--space-2); background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border); border-radius: 8px; color: var(--text); font-family: inherit;">My salary is ₹50,000</textarea>
+                            </div>
+                            <div>
+                                <label style="font-size: 0.85rem; color: var(--muted); display: block; margin-bottom: 4px;">Modified:</label>
+                                <textarea id="hl-compare-b" rows="2" style="width: 100%; padding: var(--space-2); background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border); border-radius: 8px; color: var(--text); font-family: inherit;">My salary is ₹50,001</textarea>
+                            </div>
+                        </div>
+
+                        <div id="hl-compare-results" style="padding: var(--space-3); background: rgba(0,0,0,0.3); border-radius: 8px; border: 1px solid var(--glass-border);">
+                            <div style="margin-bottom: var(--space-2);">
+                                <div style="font-size: 0.8rem; color: var(--muted); margin-bottom: 2px;">Original Hash:</div>
+                                <div id="hl-diff-hash-a" class="monospace" style="font-size: 0.8rem; word-break: break-all;"></div>
+                            </div>
+                            <div style="margin-bottom: var(--space-3);">
+                                <div style="font-size: 0.8rem; color: var(--muted); margin-bottom: 2px;">Modified Hash:</div>
+                                <div id="hl-diff-hash-b" class="monospace" style="font-size: 0.8rem; word-break: break-all;"></div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-3);">
+                                <div id="hl-bits-changed" style="font-size: 0.9rem; font-weight: 500; color: var(--warn);">
+                                    0 of 256 bits changed (about 0%)
+                                </div>
+                                <div id="hl-verdict" class="badge badge-safe" style="font-size: 0.9rem; padding: 6px 14px;">
+                                    MATCH = SAFE (unchanged)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Part 3: File fingerprint -->
+                    <div style="background: rgba(4, 7, 13, 0.5); padding: var(--space-4); border-radius: var(--radius-card); border: 1px solid var(--glass-border);">
+                        <h3 style="margin-bottom: var(--space-2); color: var(--cyan);">3. File Fingerprint</h3>
+                        <p class="text-muted" style="font-size: 0.85rem; margin-bottom: var(--space-3);">
+                            Select a file to compute its SHA-256 fingerprint. Click "Check again" after modifying the file to verify tamper detection.
+                        </p>
+                        <div style="display: flex; gap: var(--space-3); margin-bottom: var(--space-3);">
+                            <button id="btn-hl-choose-file" class="btn btn-secondary">Choose File</button>
+                            <button id="btn-hl-check-again" class="btn btn-primary" disabled>Check again</button>
+                        </div>
+                        <div id="hl-file-info" style="display: none; padding: var(--space-3); background: rgba(0,0,0,0.3); border-radius: 8px; border: 1px solid var(--glass-border);">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-2); align-items: center;">
+                                <div><strong id="hl-file-name"></strong> <span id="hl-file-size" class="text-muted" style="font-size: 0.85rem;"></span></div>
+                                <div id="hl-file-verdict" class="badge badge-safe">SAFE</div>
+                            </div>
+                            <div style="margin-bottom: 4px; font-size: 0.8rem; color: var(--muted);">Initial Fingerprint:</div>
+                            <div id="hl-file-initial-hash" class="monospace" style="font-size: 0.8rem; color: var(--mint); word-break: break-all; margin-bottom: 8px;"></div>
+                            <div id="hl-file-second-box" style="display: none;">
+                                <div style="margin-bottom: 4px; font-size: 0.8rem; color: var(--muted);">Current Fingerprint:</div>
+                                <div id="hl-file-current-hash" class="monospace" style="font-size: 0.8rem; word-break: break-all;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VAULT VIEW SECTION -->
+            <section id="panel-vault" class="stage" style="display: none;">
+                <div class="glass-card" style="max-width: 900px; margin-inline: auto;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4); flex-wrap: wrap; gap: var(--space-3);">
+                        <div>
+                            <h2>🗄️ Vault View</h2>
+                            <p class="text-muted" style="margin-top: 4px;">Protected files in encrypted storage (unreadable ciphertext on disk).</p>
+                        </div>
+                        <div style="display: flex; gap: var(--space-3);">
+                            <button id="btn-verify-all" class="btn btn-primary">Verify vault integrity</button>
+                            <button id="btn-close-vault" class="btn btn-secondary">Back to Vault</button>
+                        </div>
+                    </div>
+
+                    <div style="max-height: 450px; overflow-y: auto; border: 1px solid var(--glass-border); border-radius: var(--radius-card); background: rgba(4, 7, 13, 0.4);">
+                        <table style="width: 100%; border-collapse: collapse; font-size: 0.875rem; text-align: left;">
+                            <thead>
+                                <tr style="border-bottom: 1px solid var(--glass-border); background: rgba(255,255,255,0.04);">
+                                    <th style="padding: 12px; color: var(--muted);">Original File</th>
+                                    <th style="padding: 12px; color: var(--muted);">Stored As</th>
+                                    <th style="padding: 12px; color: var(--muted);">Size</th>
+                                    <th style="padding: 12px; color: var(--muted);">SHA-256 Fingerprint</th>
+                                    <th style="padding: 12px; color: var(--muted); text-align: center;">Proof</th>
+                                </tr>
+                            </thead>
+                            <tbody id="vault-view-tbody">
+                                <tr><td colspan="5" style="text-align: center; padding: 24px;" class="text-muted">Loading vault entries...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div id="verify-all-results" style="display: none; margin-top: var(--space-4); padding: var(--space-3); border-radius: 8px; border: 1px solid var(--glass-border); background: rgba(4, 7, 13, 0.6);">
+                        <h4 style="margin-bottom: var(--space-2);">Vault Integrity Audit Results</h4>
+                        <div id="verify-all-summary" style="font-size: 0.875rem; margin-bottom: var(--space-3);"></div>
+                        <div id="verify-all-table-container"></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Pipeline Trace Right Panel -->
+        <aside class="right-panel" style="display: none;">
+            <div class="glass-card pipeline-trace" id="pipeline-trace" style="display: none;">
+                <h3 style="margin-bottom: var(--space-2); text-align: center;">Pipeline Trace</h3>
+                <div id="trace-steps-container">
+                    <!-- Dynamic steps will go here -->
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <!-- Folder Browser Modal -->
+    <div id="folder-browser-modal" class="modal-backdrop" style="z-index: 200;">
+        <div class="modal-content glass-card" style="max-width: 600px; max-height: 80vh; display: flex; flex-direction: column;">
+            <h2 id="fb-title">Select</h2>
+            
+            <!-- Breadcrumbs & Drives -->
+            <div style="display: flex; gap: var(--space-2); margin-bottom: var(--space-3); align-items: center; flex-wrap: wrap;">
+                <div id="fb-drives" style="display: flex; gap: var(--space-2);"></div>
+            </div>
+            <div id="fb-breadcrumbs" class="monospace" style="background: rgba(4, 7, 13, 0.6); padding: var(--space-2); border-radius: 8px; margin-bottom: var(--space-3); overflow-x: auto; white-space: nowrap; color: var(--text); border: 1px solid var(--glass-border);">
+            </div>
+
+            <!-- List -->
+            <div id="fb-list" style="flex: 1; overflow-y: auto; border: 1px solid var(--glass-border); border-radius: var(--radius-card); background: rgba(4, 7, 13, 0.4); min-height: 200px;">
+                <!-- Filled via JS -->
+            </div>
+            
+            <div id="fb-error" class="text-danger" style="margin-top: var(--space-2); font-size: 0.875rem;"></div>
+
+            <div style="display: flex; justify-content: flex-end; gap: var(--space-3); margin-top: var(--space-4);">
+                <button id="btn-fb-cancel" class="btn btn-secondary">Cancel</button>
+                <button id="btn-fb-select" class="btn btn-primary">Select</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Delete Modal -->
+    <div id="confirm-delete-modal" class="modal-backdrop" style="z-index: 200;">
+        <div class="modal-content glass-card">
+            <h2><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--warn)" stroke-width="2" style="vertical-align: middle; margin-right: 8px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> Warning: Original File Removal</h2>
+            <p class="text-muted" style="margin-top: var(--space-3);">
+                The original will be deleted normally after your file is safely encrypted and verified. It is not securely wiped. On SSDs, and in synced folders such as OneDrive, copies may remain recoverable.
+            </p>
+            <div id="onedrive-warning-note" style="display: none; margin-top: var(--space-3); padding: var(--space-3); border-left: 3px solid var(--warn); background: rgba(245, 158, 11, 0.1); color: var(--warn); font-size: 0.85rem; border-radius: 4px;">
+                <strong>OneDrive Notice:</strong> This folder is synced with Microsoft OneDrive. Even after local deletion, copies may remain recoverable in your online cloud recycle bin or version history.
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: var(--space-3); margin-top: var(--space-5);">
+                <button id="btn-cancel-delete" class="btn btn-secondary">Cancel</button>
+                <button id="btn-confirm-delete" class="btn btn-danger">I Understand</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Crypto Protection Info Modal -->
+    <div id="crypto-info-modal" class="modal-backdrop" style="z-index: 200;">
+        <div class="modal-content glass-card" style="max-width: 650px;">
+            <h2>How Cryptix Protects Your Files</h2>
+            <p style="margin-top: var(--space-3); line-height: 1.6; color: var(--text);">
+                <strong>Cryptix uses AES to encrypt file contents, RSA to protect the AES key, and SHA-256 to verify integrity and detect unauthorized changes.</strong>
+            </p>
+            <div style="margin: var(--space-4) 0; overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.875rem;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid var(--glass-border); text-align: left;">
+                            <th style="padding: 8px;">Algorithm</th>
+                            <th style="padding: 8px;">Role</th>
+                            <th style="padding: 8px;">Used in Encryption</th>
+                            <th style="padding: 8px;">Used in Decryption</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid var(--glass-border);">
+                            <td style="padding: 8px; font-weight: 600; color: var(--cyan);">AES-256-GCM</td>
+                            <td style="padding: 8px;">Confidentiality</td>
+                            <td style="padding: 8px;">Encrypts file payload with unique 256-bit key</td>
+                            <td style="padding: 8px;">Decrypts file content using recovered AES key</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--glass-border);">
+                            <td style="padding: 8px; font-weight: 600; color: var(--blue);">RSA-3072 OAEP</td>
+                            <td style="padding: 8px;">Key Management</td>
+                            <td style="padding: 8px;">Protects (encrypts) the AES key using public key</td>
+                            <td style="padding: 8px;">Recovers the AES key using unlocked private key</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; font-weight: 600; color: var(--mint);">SHA-256</td>
+                            <td style="padding: 8px;">Integrity</td>
+                            <td style="padding: 8px;">Computes original fingerprint stored in metadata</td>
+                            <td style="padding: 8px;">Recalculates fingerprint & compares: SAFE / TAMPERED</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div style="display: flex; justify-content: flex-end; margin-top: var(--space-4);">
+                <button id="btn-close-crypto-info" class="btn btn-primary">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- File Proof Modal -->
+    <div id="proof-modal" class="modal-backdrop" style="z-index: 200;">
+        <div class="modal-content glass-card" style="max-width: 650px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-3);">
+                <h3 id="proof-title">Cryptographic Proof of Protection</h3>
+                <button id="btn-close-proof" class="btn btn-secondary" style="padding: 4px 10px;">✕</button>
+            </div>
+            <div id="proof-card-body" style="font-size: 0.875rem;"></div>
+        </div>
+    </div>
+
+    <!-- Change Passphrase Modal -->
+    <div id="change-passphrase-modal" class="modal-backdrop" style="z-index: 200;">
+        <div class="modal-content glass-card" style="max-width: 400px;">
+            <h2>Change Passphrase</h2>
+            <p class="text-muted" style="margin-bottom: var(--space-4);">Your existing encrypted files will remain safe and accessible with the new passphrase.</p>
+            
+            <div class="input-group">
+                <input type="password" id="change-old-pass" placeholder=" ">
+                <label for="change-old-pass">Current Passphrase</label>
+                <button class="input-icon-toggle" type="button">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                </button>
+            </div>
+            
+            <div class="input-group">
+                <input type="password" id="change-new-pass" placeholder=" ">
+                <label for="change-new-pass">New Passphrase</label>
+                <button class="input-icon-toggle" type="button">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                </button>
+            </div>
+            
+            <div class="strength-meter" id="change-strength-meter">
+                <div class="strength-seg"></div>
+                <div class="strength-seg"></div>
+                <div class="strength-seg"></div>
+                <div class="strength-seg"></div>
+                <div class="strength-seg"></div>
+            </div>
+
+            <div class="input-group">
+                <input type="password" id="change-confirm-pass" placeholder=" ">
+                <label for="change-confirm-pass">Confirm New Passphrase</label>
+                <button class="input-icon-toggle" type="button">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                </button>
+            </div>
+            
+            <p id="change-pass-error" class="text-danger" style="font-size: 0.875rem; margin-top: -12px; margin-bottom: var(--space-4);"></p>
+
+            <div style="display: flex; justify-content: flex-end; gap: var(--space-3); margin-top: var(--space-4);">
+                <button id="btn-cancel-change-pass" class="btn btn-secondary">Cancel</button>
+                <button id="btn-submit-change-pass" class="btn btn-primary">Update Passphrase</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forgot Passphrase Modal -->
+    <div id="forgot-passphrase-modal" class="modal-backdrop" style="z-index: 200;">
+        <div class="modal-content glass-card" style="max-width: 450px;">
+            <h2><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--warn)" stroke-width="2" style="vertical-align: middle; margin-right: 8px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> Forgotten Passphrase</h2>
+            <p class="text-muted" style="margin-top: var(--space-3); margin-bottom: var(--space-3);">Because Cryptix uses zero-knowledge encryption, a forgotten passphrase <strong>cannot be recovered</strong>. Your encrypted files will remain permanently locked without it.</p>
+            <p class="text-muted" style="margin-bottom: var(--space-4);">You can choose to start over with a new vault. The current vault will be renamed as a backup, but it will stay unreadable without the old passphrase.</p>
+            
+            <p style="margin-bottom: var(--space-2); font-weight: 500;">Type <strong style="color: var(--danger);">RESET</strong> to confirm:</p>
+            <div class="input-group">
+                <input type="text" id="reset-vault-input" placeholder=" ">
+                <label for="reset-vault-input">Type RESET</label>
+            </div>
+            
+            <p id="reset-vault-error" class="text-danger" style="font-size: 0.875rem; margin-top: -12px; margin-bottom: var(--space-4);"></p>
+
+            <div style="display: flex; justify-content: flex-end; gap: var(--space-3); margin-top: var(--space-4);">
+                <button id="btn-cancel-reset-vault" class="btn btn-secondary">Cancel</button>
+                <button id="btn-confirm-reset-vault" class="btn btn-danger" disabled>Start over</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confetti Canvas -->
+    <canvas id="confetti-canvas" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999; display: none;"></canvas>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
